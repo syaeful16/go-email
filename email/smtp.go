@@ -23,14 +23,20 @@ func NewSMTPClient(host string, port int, username, password, from string) *SMTP
 	}
 }
 
-func (s *SMTPClient) Send(to, subject, body string) error {
+func (s *SMTPClient) Send(to, subject, htmlBody string) error {
 	addr := fmt.Sprintf("%s:%d", s.Host, s.Port)
+
+	// Tambahkan header email HTML
 	msg := []byte(
-		"To: " + to + "\r\n" +
+		"From: " + s.From + "\r\n" +
+			"To: " + to + "\r\n" +
 			"Subject: " + subject + "\r\n" +
+			"MIME-Version: 1.0\r\n" +
+			"Content-Type: text/html; charset=\"UTF-8\"\r\n" +
 			"\r\n" +
-			body + "\r\n",
+			htmlBody + "\r\n",
 	)
+
 	auth := smtp.PlainAuth("", s.Username, s.Password, s.Host)
 	return smtp.SendMail(addr, auth, s.From, []string{to}, msg)
 }
