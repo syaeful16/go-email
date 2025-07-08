@@ -1,1 +1,1 @@
-"# go-email" 
+# go-email
